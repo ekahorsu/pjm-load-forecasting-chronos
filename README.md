@@ -1,6 +1,6 @@
 # Day-Ahead PJM Load Forecasting with a Time-Series Foundation Model
 
-Fine-tuning Chronos-Bolt, a pretrained time-series foundation model, to forecast hourly electricity demand in the PJM East region 24 hours ahead, evaluated with a rolling-origin backtest against zero-shot and classical baselines.
+Forecasting hourly PJM East electricity demand 24 hours ahead with Chronos-Bolt, a pretrained time-series foundation model, used zero-shot and fine-tuned, and evaluated with a rolling-origin backtest against classical baselines.
 
 ## Overview
 
