@@ -17,16 +17,23 @@ Four models are compared:
 
 The last 14 days of the data are held out. For each test day, every model receives all load data up to midnight and forecasts the next 24 hours, so no forecast uses information from the future (rolling-origin backtest). Accuracy is measured with MAPE and RMSE, and the calibration of the fine-tuned model's 10-90% prediction interval is checked against the ideal 80% coverage.
 
-## Selected results
+## Results
 
-Mean over the 14 test days (24-hour-ahead forecasts):
+Mean over the 14 test days (24-hour-ahead forecasts, 22 April to 5 May 2017):
 
-| Model | MAPE (%) | RMSE (MW) |
-|-------|----------|-----------|
-| Chronos-Bolt fine-tuned | | |
-| Chronos-Bolt zero-shot | | |
-| LightGBM (DirectTabular) | | |
-| Seasonal naive | | |
+| Model | MAPE (%) | RMSE (MW) | MAPE reduction vs seasonal naive |
+|-------|----------|-----------|----------------------------------|
+| Chronos-Bolt zero-shot | **4.02** | **1,315** | **34.0%** |
+| Chronos-Bolt fine-tuned | 4.43 | 1,454 | 27.3% |
+| LightGBM (DirectTabular) | 4.67 | 1,556 | 23.3% |
+| Seasonal naive | 6.09 | 1,935 | - |
+
+**What the results show**
+
+- The pretrained foundation model, used zero-shot with no training on PJM data, gave the most accurate forecasts: 34% lower MAPE than the seasonal naive forecast and 14% lower than the LightGBM model trained on this series.
+- Fine-tuning did not help here. With only 2,664 hours (about 16 weeks) of training data, further training moved the model away from what it learned in pretraining and slightly overfit the training period. Fine-tuning is likely to pay off with several years of data, and that is the natural next experiment.
+- The fine-tuned model's 10-90% prediction intervals contained only 41% of the actual hourly loads, against an ideal 80%. Its uncertainty bands are too narrow, which is consistent with overfitting the short training period and shows why calibration should be checked alongside point accuracy.
+- Both Chronos variants still beat the classical baselines, which suggests that pretraining on a large and diverse collection of time series transfers well to electricity demand.
 
 ## Data
 
@@ -60,5 +67,5 @@ jupyter notebook pjm_load_forecasting_chronos.ipynb
 ## Next steps
 
 - Add temperature forecasts as covariates, since weather drives most load forecast error
-- Extend the data to several years to capture seasonal effects
+- Extend the data to several years to capture seasonal effects and test whether fine-tuning then improves on zero-shot accuracy
 - Fine-tune larger Chronos models on a GPU cluster and compare accuracy with model size
